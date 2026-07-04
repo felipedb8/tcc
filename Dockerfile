@@ -1,17 +1,15 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-COPY ProjetoTeste/ProjetoTeste.csproj ProjetoTeste/
-RUN dotnet restore ProjetoTeste/ProjetoTeste.csproj
-
 COPY ProjetoTeste/ ProjetoTeste/
-WORKDIR /app/ProjetoTeste
-RUN dotnet publish -c Release -o out
+
+RUN dotnet restore ProjetoTeste/ProjetoTeste.csproj
+RUN dotnet publish ProjetoTeste/ProjetoTeste.csproj -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
-COPY --from=build /app/ProjetoTeste/out .
+COPY --from=build /app/out .
 
 EXPOSE 80
 
