@@ -1,18 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
-using ProjetoTeste.Model;
 
 namespace ProjetoTeste.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Distancia")]
     public class DistanciaController : ControllerBase
     {
-        [HttpPost]
-        public IActionResult ReceberDistancia([FromBody] DistanciaModel dados)
+        [HttpGet]
+        public IActionResult Get()
         {
-            Console.WriteLine($"[API] Distância recebida do ESP32: {dados.Distancia} cm");
+            Console.WriteLine("[API] GET chamado pelo ESP32");
 
-            return Ok(new { status = "sucesso", mensagem = "Dado recebido corretamente!" });
+            return Ok(new
+            {
+                distancia = 10
+            });
         }
     }
 }
