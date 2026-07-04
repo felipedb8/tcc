@@ -9,12 +9,25 @@ namespace ProjetoTeste.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery] float valor)
         {
-            Console.WriteLine($"[API] GET chamado pelo ESP32. Distância recebida: {valor} cm");
+            bool estaOcupado = valor > 0 && valor <= 200.0f;
+
+            // Limpa uma linha e joga o status bem destacado no Console Log do Servidor
+            Console.WriteLine("\n=============================================");
+            if (estaOcupado)
+            {
+                Console.WriteLine($"[STATUS] 🔴 OCUPADO! (Carro detectado a {valor} cm)");
+            }
+            else
+            {
+                Console.WriteLine($"[STATUS] 🟢 LIVRE! (Distância atual: {valor} cm)");
+            }
+            Console.WriteLine("=============================================");
 
             return Ok(new
             {
                 status = "Sucesso",
-                distanciaRegistrada = valor
+                distanciaRegistrada = valor,
+                vagaOcupada = estaOcupado
             });
         }
     }
