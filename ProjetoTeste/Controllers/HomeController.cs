@@ -7,13 +7,14 @@ namespace ProjetoTeste.Controllers
     public class DistanciaController : ControllerBase
     {
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] float valor)
         {
-            Console.WriteLine("[API] GET chamado pelo ESP32");
+            Console.WriteLine($"[API] GET chamado pelo ESP32. Distância recebida: {valor} cm");
 
             return Ok(new
             {
-                distancia = 10
+                status = "Sucesso",
+                distanciaRegistrada = valor
             });
         }
     }
