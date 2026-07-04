@@ -1,23 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
-using ProjetoTeste.Model;
-
-namespace ProjetoTeste.Controllers
+[ApiController]
+[Route("api/Distancia")]
+public class DistanciaController : ControllerBase
 {
-    [ApiController]
-    [Route("api/Distancia")]
-    public class DistanciaController : ControllerBase
+    [HttpPost]
+    public IActionResult ReceberDistancia([FromBody] DistanciaModel dados)
     {
-        [HttpPost]
-        public IActionResult ReceberDistancia([FromBody] DistanciaModel dados)
+        return Ok(new
         {
-            Console.WriteLine($"Distância recebida: {dados.Distancia}");
-
-            return Ok(new
-            {
-                status = "sucesso",
-                recebido = dados.Distancia,
-                mensagem = "OK do servidor"
-            });
-        }
+            status = "sucesso",
+            recebido = dados.Distancia
+        });
     }
 }
