@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "ProjetoTeste.Controllers.DistanciaController",
+    "Method": "ReceberDistancia",
+    "RelativePath": "api/Distancia",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dados",
+        "Type": "ProjetoTeste.Model.DistanciaModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
