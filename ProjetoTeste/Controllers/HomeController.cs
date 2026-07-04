@@ -7,11 +7,9 @@ namespace ProjetoTeste.Controllers
     [Route("api/Distancia")]
     public class DistanciaController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-
-        public DistanciaController(IConfiguration configuration)
+        private string GetConnectionString()
         {
-            _configuration = configuration;
+            return Environment.GetEnvironmentVariable("ConnectionStrings__PostgresConnection");
         }
 
         [HttpGet]
@@ -21,13 +19,13 @@ namespace ProjetoTeste.Controllers
 
             try
             {
-                var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgresConnection");
-
-                using var conn = new NpgsqlConnection(connectionString);
+                using var conn = new NpgsqlConnection(GetConnectionString());
                 conn.Open();
 
-                var sql = @"INSERT INTO leituras (distancia, vaga_ocupada, data_hora)
-                            VALUES (@distancia, @vaga, NOW())";
+                var sql = @"
+                    INSERT INTO leituras (distancia, vaga_ocupada, data_hora)
+                    VALUES (@distancia, @vaga, NOW());
+                ";
 
                 using var cmd = new NpgsqlCommand(sql, conn);
 
@@ -38,10 +36,7 @@ namespace ProjetoTeste.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
-                {
-                    erro = ex.Message
-                });
+                return StatusCode(500, new { erro = ex.Message });
             }
 
             return Ok(new
@@ -52,14 +47,50 @@ namespace ProjetoTeste.Controllers
             });
         }
 
+        [HttpGet("log")]
+        public IActionResult GetLog()
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(GetConnectionString());
+                conn.Open();
+
+                var sql = @"
+                    SELECT id, distancia, vaga_ocupada, data_hora
+                    FROM leituras
+                    ORDER BY data_hora DESC;
+                ";
+
+                using var cmd = new NpgsqlCommand(sql, conn);
+                using var reader = cmd.ExecuteReader();
+
+                var lista = new List<object>();
+
+                while (reader.Read())
+                {
+                    lista.Add(new
+                    {
+                        id = reader.GetInt32(0),
+                        distancia = reader.GetFloat(1),
+                        vagaOcupada = reader.GetBoolean(2),
+                        dataHora = reader.GetDateTime(3)
+                    });
+                }
+
+                return Ok(lista);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { erro = ex.Message });
+            }
+        }
+
         [HttpGet("init")]
         public IActionResult Init()
         {
             try
             {
-                var connString = _configuration.GetConnectionString("PostgresConnection");
-
-                using var conn = new NpgsqlConnection(connString);
+                using var conn = new NpgsqlConnection(GetConnectionString());
                 conn.Open();
 
                 var sql = @"
@@ -78,10 +109,7 @@ namespace ProjetoTeste.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
-                {
-                    erro = ex.Message
-                });
+                return StatusCode(500, new { erro = ex.Message });
             }
         }
     }
