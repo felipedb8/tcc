@@ -50,5 +50,30 @@ namespace ProjetoTeste.Controllers
                 vagaOcupada = estaOcupado
             });
         }
+
+        using Npgsql;
+
+[HttpGet("init")]
+public IActionResult Init()
+{
+    var connString = _configuration.GetConnectionString("PostgresConnection");
+
+    using var conn = new NpgsqlConnection(connString);
+    conn.Open();
+
+    var sql = @"
+        CREATE TABLE IF NOT EXISTS leituras (
+            id SERIAL PRIMARY KEY,
+            distancia REAL NOT NULL,
+            vaga_ocupada BOOLEAN NOT NULL,
+            data_hora TIMESTAMP NOT NULL
+        );
+    ";
+
+    using var cmd = new NpgsqlCommand(sql, conn);
+    cmd.ExecuteNonQuery();
+
+    return Ok("Tabela criada/verificada");
+}
     }
 }
