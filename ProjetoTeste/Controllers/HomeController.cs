@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace ProjetoTeste.Controllers
 {
@@ -6,22 +7,41 @@ namespace ProjetoTeste.Controllers
     [Route("api/Distancia")]
     public class DistanciaController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+
+        public DistanciaController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpGet]
         public IActionResult Get([FromQuery] float valor)
         {
             bool estaOcupado = valor > 0 && valor <= 200.0f;
+            try
+            {
+                var connectionString = _configuration.GetConnectionString("PostgresConnection");
 
-            // Limpa uma linha e joga o status bem destacado no Console Log do Servidor
-            Console.WriteLine("\n=============================================");
-            if (estaOcupado)
-            {
-                Console.WriteLine($"[STATUS] 🔴 OCUPADO! (Carro detectado a {valor} cm)");
+                using var conn = new NpgsqlConnection(connectionString);
+                conn.Open();
+
+                var sql = @"INSERT INTO leituras (distancia, vaga_ocupada, data_hora)
+                            VALUES (@distancia, @vaga, NOW())";
+
+                using var cmd = new NpgsqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("distancia", valor);
+                cmd.Parameters.AddWithValue("vaga", estaOcupado);
+
+                cmd.ExecuteNonQuery();
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"[STATUS] 🟢 LIVRE! (Distância atual: {valor} cm)");
+                return StatusCode(500, new
+                {
+                    erro = ex.Message
+                });
             }
-            Console.WriteLine("=============================================");
 
             return Ok(new
             {
