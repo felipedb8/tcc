@@ -4,7 +4,7 @@ using ProjetoTeste.Model;
 namespace ProjetoTeste.Controllers
 {
     [ApiController]
-    [Route("api/Home")]
+    [Route("api/Distancia")]
     public class HomeController : ControllerBase
     {
         [HttpPost]
