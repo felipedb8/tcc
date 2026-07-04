@@ -18,6 +18,7 @@ namespace ProjetoTeste.Controllers
         public IActionResult Get([FromQuery] float valor)
         {
             bool estaOcupado = valor > 0 && valor <= 200.0f;
+
             try
             {
                 var connectionString = _configuration.GetConnectionString("PostgresConnection");
@@ -51,29 +52,37 @@ namespace ProjetoTeste.Controllers
             });
         }
 
-        using Npgsql;
+        [HttpGet("init")]
+        public IActionResult Init()
+        {
+            try
+            {
+                var connString = _configuration.GetConnectionString("PostgresConnection");
 
-[HttpGet("init")]
-public IActionResult Init()
-{
-    var connString = _configuration.GetConnectionString("PostgresConnection");
+                using var conn = new NpgsqlConnection(connString);
+                conn.Open();
 
-    using var conn = new NpgsqlConnection(connString);
-    conn.Open();
+                var sql = @"
+                    CREATE TABLE IF NOT EXISTS leituras (
+                        id SERIAL PRIMARY KEY,
+                        distancia REAL NOT NULL,
+                        vaga_ocupada BOOLEAN NOT NULL,
+                        data_hora TIMESTAMP NOT NULL
+                    );
+                ";
 
-    var sql = @"
-        CREATE TABLE IF NOT EXISTS leituras (
-            id SERIAL PRIMARY KEY,
-            distancia REAL NOT NULL,
-            vaga_ocupada BOOLEAN NOT NULL,
-            data_hora TIMESTAMP NOT NULL
-        );
-    ";
+                using var cmd = new NpgsqlCommand(sql, conn);
+                cmd.ExecuteNonQuery();
 
-    using var cmd = new NpgsqlCommand(sql, conn);
-    cmd.ExecuteNonQuery();
-
-    return Ok("Tabela criada/verificada");
-}
+                return Ok("Tabela criada/verificada");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    erro = ex.Message
+                });
+            }
+        }
     }
 }
