@@ -21,7 +21,7 @@ namespace ProjetoTeste.Controllers
 
             try
             {
-                var connectionString = _configuration.GetConnectionString("PostgresConnection");
+                var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgresConnection");
 
                 using var conn = new NpgsqlConnection(connectionString);
                 conn.Open();
