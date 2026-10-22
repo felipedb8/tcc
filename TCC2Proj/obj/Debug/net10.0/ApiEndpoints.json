@@ -1,0 +1,76 @@
+[
+  {
+    "ContainingType": "TCC2Proj.Controllers.DistanciaController",
+    "Method": "Salvar",
+    "RelativePath": "api/Distancia",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "leitura",
+        "Type": "TCC2Proj.Models.Leitura",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TCC2Proj.Controllers.DistanciaController",
+    "Method": "ConfirmarChegada",
+    "RelativePath": "api/Distancia/confirmar/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TCC2Proj.Controllers.DistanciaController",
+    "Method": "ListarVagas",
+    "RelativePath": "api/Distancia/vagas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TCC2Proj.Controllers.LoginController",
+    "Method": "Logar",
+    "RelativePath": "api/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dadosLogin",
+        "Type": "TCC2Proj.Controllers.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TCC2Proj.Controllers.LoginController",
+    "Method": "Cadastrar",
+    "RelativePath": "api/Login/cadastrar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "novoUsuario",
+        "Type": "TCC2Proj.Models.Usuarios",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
