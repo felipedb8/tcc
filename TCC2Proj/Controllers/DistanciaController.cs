@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TCC2Proj.Data;
@@ -10,10 +11,14 @@ namespace TCC2Proj.Controllers
     public class DistanciaController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<DistanciaController> _logger;
 
-        public DistanciaController(AppDbContext context)
+        public DistanciaController(
+            AppDbContext context,
+            ILogger<DistanciaController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -21,7 +26,14 @@ namespace TCC2Proj.Controllers
             [FromBody] Leitura leitura)
         {
             if (leitura == null)
+            {
+                _logger.LogWarning("Leitura invalida recebida.");
                 return BadRequest("Leitura inválida.");
+            }
+
+            _logger.LogInformation(
+                "Requisicao recebida do ESP32. Distancia: {Distancia} cm",
+                leitura.Distancia);
 
             leitura.DataHora = DateTime.UtcNow;
 
@@ -57,8 +69,15 @@ namespace TCC2Proj.Controllers
 
             await _context.SaveChangesAsync();
 
+            _logger.LogInformation(
+                "Dados salvos no PostgreSQL. Vaga: {Id}, Status: {Status}",
+                vaga.Id,
+                vaga.Status);
+
             return Ok(new
             {
+                sucesso = true,
+                mensagem = "Dados recebidos e processados com sucesso.",
                 leitura.Distancia,
                 leitura.VagaOcupada,
                 vaga.Status
